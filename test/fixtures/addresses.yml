@@ -1,0 +1,33 @@
+# == Schema Information
+#
+# Table name: addresses
+#
+#  id           :bigint           not null, primary key
+#  street       :string
+#  number       :string
+#  neighborhood :string
+#  city         :string
+#  state        :string
+#  zip_code     :string
+#  proponent_id :bigint           not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#
+
+one:
+  street: MyString
+  number: MyString
+  neighborhood: MyString
+  city: MyString
+  state: MyString
+  zip_code: MyString
+  proponent: one
+
+two:
+  street: MyString
+  number: MyString
+  neighborhood: MyString
+  city: MyString
+  state: MyString
+  zip_code: MyString
+  proponent: two

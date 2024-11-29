@@ -1,0 +1,22 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+  username: postgres
+  password: postgres
+  host: db
+
+development:
+  <<: *default
+  database: easy_inss_development
+
+test:
+  <<: *default
+  database: easy_inss_test
+
+production:
+  <<: *default
+  database: easy_inss_production
+  username: easy_inss
+  password: <%= ENV["easy_inss_DATABASE_PASSWORD"] %>

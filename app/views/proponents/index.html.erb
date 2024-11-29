@@ -1,0 +1,29 @@
+<h1>Proponentes</h1>
+
+<div class="mb-3 text-end">
+  <%= link_to 'Novo Proponente', new_user_proponent_path(current_user), class: 'btn btn-primary' %>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>CPF</th>
+      <th>Data de Nascimento</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @proponents.each do |proponent| %>
+    <tr>
+      <td><%= proponent.name %></td>
+      <td><%= proponent.cpf %></td>
+      <td><%= proponent.date_of_birth %></td>
+      <td>
+        <%= link_to "Editar", edit_user_proponent_path(current_user, proponent), class: "btn btn-sm btn-warning" %>
+        <%= link_to "Excluir", user_proponent_path(current_user, proponent), method: :delete, class: "btn btn-sm btn-danger", data: { confirm: "Tem certeza?" } %>
+      </td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

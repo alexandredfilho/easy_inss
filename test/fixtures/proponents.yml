@@ -1,0 +1,22 @@
+# == Schema Information
+#
+# Table name: proponents
+#
+#  id            :bigint           not null, primary key
+#  name          :string
+#  cpf           :string
+#  date_of_birth :date
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  user_id       :bigint           not null
+#
+
+one:
+  name: MyString
+  cpf: MyString
+  date_of_birth: 2024-11-28
+
+two:
+  name: MyString
+  cpf: MyString
+  date_of_birth: 2024-11-28

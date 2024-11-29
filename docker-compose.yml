@@ -1,0 +1,29 @@
+services:
+  easy_inss:
+    build:
+      context: .
+    command: bin/dev && /wait-for-it.sh db:5432 -- bundle exec annotate --models --position bottom
+    volumes:
+      - .:/app:cached
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      RAILS_ENV: development
+      DATABASE_URL: postgres://postgres:password@db:5432/easy_inss_development
+
+  db:
+    image: postgres:15
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: password
+
+  redis:
+    image: redis:7.4
+
+volumes:
+  pg_data:

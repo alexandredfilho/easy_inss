@@ -1,0 +1,199 @@
+<%= form_with(model: @proponent, url: @proponent.new_record? ? user_proponents_path(current_user) : user_proponent_path(current_user, @proponent), local: true, class: 'needs-validation') do |f| %>
+<div class="card mb-4">
+  <div class="card-header">Proponent Data</div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-6">
+        <%= f.label :name, 'Name', class: 'form-label' %>
+        <%= f.text_field :name, class: 'form-control', required: true %>
+      </div>
+      <div class="col-md-6">
+        <%= f.label :cpf, 'CPF', class: 'form-label' %>
+        <%= f.text_field :cpf, class: 'form-control', required: true, id: 'cpf' %>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-6">
+        <%= f.label :date_of_birth, 'Date of Birth', class: 'form-label' %>
+        <%= f.date_field :date_of_birth, class: 'form-control', required: true %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header">Address</div>
+  <div class="card-body">
+    <%= f.fields_for :address do |a| %>
+    <div class="row">
+      <div class="col-md-6">
+        <%= a.label :street, 'Street', class: 'form-label' %>
+        <%= a.text_field :street, class: 'form-control', required: true %>
+      </div>
+      <div class="col-md-6">
+        <%= a.label :number, 'Number', class: 'form-label' %>
+        <%= a.text_field :number, class: 'form-control', required: true %>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-4">
+        <%= a.label :neighborhood, 'Neighborhood', class: 'form-label' %>
+        <%= a.text_field :neighborhood, class: 'form-control', required: true %>
+      </div>
+      <div class="col-md-4">
+        <%= a.label :city, 'City', class: 'form-label' %>
+        <%= a.text_field :city, class: 'form-control', required: true %>
+      </div>
+      <div class="col-md-4">
+        <%= a.label :state, 'State', class: 'form-label' %>
+        <%= a.text_field :state, class: 'form-control', required: true %>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-6">
+        <%= a.label :zip_code, 'Zip Code', class: 'form-label' %>
+        <%= a.text_field :zip_code, class: 'form-control', required: true %>
+      </div>
+    </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header">Phones</div>
+  <div class="card-body">
+    <%= f.fields_for :phones do |p| %>
+    <div class="phone-fields">
+      <div class="row">
+        <div class="col-md-6">
+          <%= p.label :number, 'Number', class: 'form-label' %>
+          <%= p.telephone_field :number, class: 'form-control', required: true %>
+        </div>
+        <div class="col-md-6">
+          <%= p.label :phone_type, 'Type', class: 'form-label' %>
+          <%= p.select :phone_type, [['Pessoal', 'personal'], ['Referência', 'reference']], { prompt: 'Selecione...' },
+                            class: 'form-select', required: true, data: { action: 'change->phone-behavior#handlePhoneTypeChange' } %>
+        </div>
+        <div class="col-12 text-end">
+          <button type="button" class="btn btn-danger btn-sm delete-phone" style="display: none;">
+            <i class="bi bi-x-circle"></i> Delete
+          </button>
+        </div>
+      </div>
+      <div class="row mt-3 reference-name-field" style="display: none;">
+        <div class="col-md-6">
+          <%= p.label :reference_name, 'Reference Name', class: 'form-label' %>
+          <%= p.text_field :reference_name, class: 'form-control' %>
+        </div>
+      </div>
+    </div>
+    <% end %>
+
+    <div class="text-end mt-3">
+      <button type="button" id="add-phone" class="btn btn-outline-primary">
+        <i class="bi bi-plus-circle"></i> Add Phone
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header">Salary</div>
+  <div class="card-body">
+    <%= f.fields_for :salary do |s| %>
+    <div class="row">
+      <div class="col-md-6">
+        <%= s.label :amount, 'Salary', class: 'form-label' %>
+        <%= s.number_field :amount, class: 'form-control', step: 0.01, required: true %>
+      </div>
+      <div class="col-md-6">
+        <div class="form-text mt-4">The INSS discount will be applied automatically.</div>
+      </div>
+    </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="text-end">
+  <%= f.submit 'Save', class: 'btn btn-primary' %>
+  <%= link_to 'Cancel', user_proponents_path(current_user), class: 'btn btn-secondary' %>
+</div>
+<% end %>
+
+<% content_for :javascript do %>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const handlePhoneTypeChange = (event) => {
+      const phoneField = event.target.closest('.phone-fields')
+      const referenceField = phoneField.querySelector('.reference-name-field')
+
+      if (event.target.value === 'reference') {
+        referenceField.style.display = 'block'
+      } else {
+        referenceField.style.display = 'none'
+      }
+    };
+
+    document.querySelectorAll('.form-select').forEach(select => {
+      select.addEventListener('change', handlePhoneTypeChange)
+    });
+
+    document.body.addEventListener('click', function(event) {
+      if (event.target && event.target.id === 'add-phone') {
+        const phoneFieldsContainer = document.querySelector('.phone-fields')
+        const newPhoneField = phoneFieldsContainer.cloneNode(true)
+        phoneFieldsContainer.parentNode.insertBefore(newPhoneField, event.target.parentNode)
+
+        const inputs = newPhoneField.querySelectorAll('input, select')
+        inputs.forEach(input => input.value = '')
+
+        const newSelect = newPhoneField.querySelector('.form-select')
+        newSelect.addEventListener('change', handlePhoneTypeChange)
+
+        const phoneFields = document.querySelectorAll('.phone-fields')
+        phoneFields.forEach((phoneField, index) => {
+          const phoneNumberField = phoneField.querySelector('input[name$="[number]"]')
+          const phoneTypeField = phoneField.querySelector('select[name$="[phone_type]"]')
+          const referenceNameField = phoneField.querySelector('input[name$="[reference_name]"]')
+
+          if (phoneNumberField) phoneNumberField.name = `proponent[phones_attributes][${index}][number]`
+          if (phoneTypeField) phoneTypeField.name = `proponent[phones_attributes][${index}][phone_type]`
+          if (referenceNameField) referenceNameField.name = `proponent[phones_attributes][${index}][reference_name]`
+        })
+      }
+    })
+
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault()
+
+      const phoneFields = document.querySelectorAll('.phone-fields')
+      const phoneArray = {}
+
+      phoneFields.forEach((phoneField, index) => {
+        const phoneNumber = phoneField.querySelector('input[name$="[number]"]').value
+        const phoneType = phoneField.querySelector('select[name$="[phone_type]"]').value
+        const referenceName = phoneField.querySelector('input[name$="[reference_name]"]')?.value
+
+        if (phoneNumber && phoneType) {
+          const phoneParams = {
+            number: phoneNumber,
+            phone_type: phoneType,
+            reference_name: referenceName
+          }
+
+          phoneArray[index] = phoneParams
+        }
+      })
+    })
+  })
+
+  // CPF formatter
+  document.addEventListener('DOMContentLoaded', function() {
+    var cpfInput = document.getElementById('cpf')
+    if (cpfInput) {
+      Inputmask("999.999.999-99").mask(cpfInput)
+    }
+  })
+</script>
+<% end %>
