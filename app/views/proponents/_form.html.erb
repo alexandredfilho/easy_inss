@@ -64,18 +64,19 @@
   <div class="card-body">
     <%= f.fields_for :phones do |p| %>
     <div class="phone-fields">
-      <div class="row">
-        <div class="col-md-6">
+      <div class="row align-items-end">
+        <div class="col-md-5">
           <%= p.label :number, 'Number', class: 'form-label' %>
           <%= p.telephone_field :number, class: 'form-control', required: true %>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-5">
           <%= p.label :phone_type, 'Type', class: 'form-label' %>
-          <%= p.select :phone_type, [['Pessoal', 'personal'], ['Referência', 'reference']], { prompt: 'Selecione...' },
-                            class: 'form-select', required: true, data: { action: 'change->phone-behavior#handlePhoneTypeChange' } %>
+          <%= p.select :phone_type, [['Pessoal', 'personal'], ['Referência', 'reference']],
+           { prompt: 'Selecione...' }, class: 'form-select',
+           required: true, data: { action: 'change->phone-behavior#handlePhoneTypeChange' } %>
         </div>
-        <div class="col-12 text-end">
-          <button type="button" class="btn btn-danger btn-sm delete-phone" style="display: none;">
+        <div class="col-md-2 text-end">
+          <button type="button" class="btn btn-danger btn-sm delete-phone">
             <i class="bi bi-x-circle"></i> Delete
           </button>
         </div>
@@ -104,7 +105,7 @@
     <div class="row">
       <div class="col-md-6">
         <%= s.label :amount, 'Salary', class: 'form-label' %>
-        <%= s.number_field :amount, class: 'form-control', step: 0.01, required: true %>
+        <%= s.text_field :amount, class: 'form-control', step: 0.01, required: true %>
       </div>
       <div class="col-md-6">
         <div class="form-text mt-4">The INSS discount will be applied automatically.</div>
@@ -132,7 +133,7 @@
       } else {
         referenceField.style.display = 'none'
       }
-    }
+    };
 
     const showReferenceNameFields = () => {
       document.querySelectorAll('.phone-fields').forEach(phoneField => {
@@ -147,6 +148,19 @@
             referenceField.style.display = 'none'
           }
         }
+      })
+    }
+
+    const updatePhoneFieldsNames = () => {
+      const phoneFields = document.querySelectorAll('.phone-fields')
+      phoneFields.forEach((phoneField, index) => {
+        const phoneNumberField = phoneField.querySelector('input[name$="[number]"]')
+        const phoneTypeField = phoneField.querySelector('select[name$="[phone_type]"]')
+        const referenceNameField = phoneField.querySelector('input[name$="[reference_name]"]')
+
+        if (phoneNumberField) phoneNumberField.name = `proponent[phones_attributes][${index}][number]`
+        if (phoneTypeField) phoneTypeField.name = `proponent[phones_attributes][${index}][phone_type]`
+        if (referenceNameField) referenceNameField.name = `proponent[phones_attributes][${index}][reference_name]`
       })
     }
 
@@ -168,42 +182,55 @@
         const newSelect = newPhoneField.querySelector('.form-select')
         newSelect.addEventListener('change', handlePhoneTypeChange)
 
-        const phoneFields = document.querySelectorAll('.phone-fields')
-        phoneFields.forEach((phoneField, index) => {
-          const phoneNumberField = phoneField.querySelector('input[name$="[number]"]')
-          const phoneTypeField = phoneField.querySelector('select[name$="[phone_type]"]')
-          const referenceNameField = phoneField.querySelector('input[name$="[reference_name]"]')
+        const deleteButton = newPhoneField.querySelector('.delete-phone')
+        deleteButton.addEventListener('click', handleDeletePhone)
 
-          if (phoneNumberField) phoneNumberField.name = `proponent[phones_attributes][${index}][number]`
-          if (phoneTypeField) phoneTypeField.name = `proponent[phones_attributes][${index}][phone_type]`
-          if (referenceNameField) referenceNameField.name = `proponent[phones_attributes][${index}][reference_name]`
-        })
+        updatePhoneFieldsNames()
+      }
+
+      if (event.target && event.target.classList.contains('delete-phone')) {
+        handleDeletePhone(event)
       }
     })
 
-    form.addEventListener('submit', function(event) {
-      event.preventDefault()
+    const handleDeletePhone = (event) => {
+      const phoneField = event.target.closest('.phone-fields')
+      if (phoneField) {
+        const destroyFlag = phoneField.querySelector('.destroy-flag')
+        if (destroyFlag) {
+          destroyFlag.value = '1'
+        }
+        phoneField.style.display = 'none'
+        updatePhoneFieldsNames()
+      }
+    }
 
-      const phoneFields = document.querySelectorAll('.phone-fields')
-      const phoneArray = {}
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const phoneFields = document.querySelectorAll('.phone-fields');
+      const phoneArray = {};
 
       phoneFields.forEach((phoneField, index) => {
-        const phoneNumber = phoneField.querySelector('input[name$="[number]"]').value
-        const phoneType = phoneField.querySelector('select[name$="[phone_type]"]').value
-        const referenceName = phoneField.querySelector('input[name$="[reference_name]"]')?.value
+        const phoneNumber = phoneField.querySelector('input[name$="[number]"]').value;
+        const phoneType = phoneField.querySelector('select[name$="[phone_type]"]').value;
+        const referenceName = phoneField.querySelector('input[name$="[reference_name]"]')?.value;
 
         if (phoneNumber && phoneType) {
           const phoneParams = {
             number: phoneNumber,
             phone_type: phoneType,
             reference_name: referenceName
-          }
+          };
 
-          phoneArray[index] = phoneParams
+          phoneArray[index] = phoneParams;
         }
-      })
-    })
-  })
+      });
+    });
+
+    showReferenceNameFields();
+  });
+
 
   // CPF formatter
   document.addEventListener('DOMContentLoaded', function() {
