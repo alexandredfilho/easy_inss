@@ -132,11 +132,29 @@
       } else {
         referenceField.style.display = 'none'
       }
-    };
+    }
+
+    const showReferenceNameFields = () => {
+      document.querySelectorAll('.phone-fields').forEach(phoneField => {
+        const phoneTypeSelect = phoneField.querySelector('.form-select')
+        const referenceField = phoneField.querySelector('.reference-name-field')
+
+        if (phoneTypeSelect && referenceField) {
+          const phoneType = phoneTypeSelect.value
+          if (phoneType === 'reference') {
+            referenceField.style.display = 'block'
+          } else {
+            referenceField.style.display = 'none'
+          }
+        }
+      })
+    }
+
+    showReferenceNameFields()
 
     document.querySelectorAll('.form-select').forEach(select => {
       select.addEventListener('change', handlePhoneTypeChange)
-    });
+    })
 
     document.body.addEventListener('click', function(event) {
       if (event.target && event.target.id === 'add-phone') {
@@ -162,7 +180,6 @@
         })
       }
     })
-
 
     form.addEventListener('submit', function(event) {
       event.preventDefault()
