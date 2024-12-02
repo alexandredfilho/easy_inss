@@ -9,7 +9,7 @@ RUN curl -o /wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for
 # Set work directory
 RUN mkdir -p /app
 WORKDIR /app
-RUN yarn install
+# RUN yarn install
 
 # Copy gemfile and install dependencies
 COPY Gemfile* /app/
