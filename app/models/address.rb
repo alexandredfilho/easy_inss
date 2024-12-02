@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Address < ApplicationRecord
-  belongs_to :proponent
+  belongs_to :proponent, inverse_of: :address
 
   validates :street, :number, :neighborhood, :city, :state, :zip_code, presence: true
 end

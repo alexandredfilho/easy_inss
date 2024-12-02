@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  has_many :proponents
+  has_many :proponents, dependent: :destroy, inverse_of: :user
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
