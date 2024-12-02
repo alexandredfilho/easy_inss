@@ -3,7 +3,7 @@ class ProponentsController < ApplicationController
   before_action :set_user
 
   def index
-    @proponents = @user.proponents
+    @proponents = @user.proponents.includes(:address, :phones, :salary)
   end
 
   def show
@@ -12,11 +12,13 @@ class ProponentsController < ApplicationController
 
   def new
     @proponent = @user.proponents.new
+    @proponent.build_address
+    @proponent.phones.build
+    @proponent.build_salary
   end
 
   def create
     @proponent = @user.proponents.new(proponent_params)
-    puts "PARAMS: #{proponent_params}"
     if @proponent.save
       redirect_to user_proponents_path(@user), notice: 'Proponente criado com sucesso.'
     else
@@ -31,7 +33,6 @@ class ProponentsController < ApplicationController
   def update
     @proponent = @user.proponents.find(params[:id])
     if @proponent.update(proponent_params)
-      puts "PARAMS: #{proponent_params}"
       redirect_to user_proponents_path(@user), notice: 'Proponente atualizado com sucesso.'
     else
       render :edit
@@ -41,6 +42,7 @@ class ProponentsController < ApplicationController
   def destroy
     @proponent = @user.proponents.find(params[:id])
     @proponent.destroy
+
     redirect_to user_proponents_path(@user), notice: 'Proponente excluído com sucesso.'
   end
 
