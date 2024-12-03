@@ -2,6 +2,7 @@
 
 class User < ApplicationRecord
   has_many :proponents, dependent: :destroy, inverse_of: :user
+  has_many :inss_discount_metrics, dependent: :destroy, inverse_of: :user
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
