@@ -5,11 +5,9 @@ Rails.application.routes.draw do
   devise_for :users
 
   resources :users do
-    resources :proponents do
-      resources :phones, only: %i[index new create edit update destroy]
-      resources :addresses, only: %i[index new create edit update destroy]
-    end
+    resources :proponents
+    resources :inss_discount_metrics, only: [:index]
   end
 
-  root 'proponents#index'
+  root 'inss_discount_metrics#index'
 end
