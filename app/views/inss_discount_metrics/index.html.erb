@@ -1,0 +1,27 @@
+<div>
+  <h1>INSS Discount Metrics</h1>
+
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Salary Bracket</th>
+        <th>Number of Proponents</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @inss_discount_metrics.each do |salary_bracket, proponent_count| %>
+      <tr>
+        <td>
+          <%= number_to_currency(salary_bracket.split('-').first.to_f, unit: "R$", delimiter: ".", separator: ",") %> -
+          <%= number_to_currency(salary_bracket.split('-').last.to_f, unit: "R$", delimiter: ".", separator: ",") %>
+        </td>
+        <td><%= proponent_count %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <h2>Proponents by Salary Bracket</h2>
+
+  <%= bar_chart @inss_discount_metrics, xtitle: "Salary Bracket", ytitle: "Number of Proponents" %>
+</div>
