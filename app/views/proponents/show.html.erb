@@ -1,0 +1,106 @@
+<div class="container my-5">
+  <h1 class="mb-4">Proponent Details</h1>
+
+  <!-- Proponent Data -->
+  <div class="card mb-4">
+    <div class="card-header">Proponent Data</div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>Name:</strong> <%= @proponent.name %></p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>CPF:</strong> <%= @proponent.cpf %></p>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-md-6">
+          <p><strong>Date of Birth:</strong> <%= l(@proponent.date_of_birth, format: :long) %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Address -->
+  <div class="card mb-4">
+    <div class="card-header">Address</div>
+    <div class="card-body">
+      <% if @proponent.address.present? %>
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>Street:</strong> <%= @proponent.address.street %></p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Number:</strong> <%= @proponent.address.number %></p>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-md-4">
+          <p><strong>Neighborhood:</strong> <%= @proponent.address.neighborhood %></p>
+        </div>
+        <div class="col-md-4">
+          <p><strong>City:</strong> <%= @proponent.address.city %></p>
+        </div>
+        <div class="col-md-4">
+          <p><strong>State:</strong> <%= @proponent.address.state %></p>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-md-6">
+          <p><strong>Zip Code:</strong> <%= @proponent.address.zip_code %></p>
+        </div>
+      </div>
+      <% else %>
+      <p>No address registered.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Phones -->
+  <div class="card mb-4">
+    <div class="card-header">Phones</div>
+    <div class="card-body">
+      <% if @proponent.phones.any? %>
+      <% @proponent.phones.each do |phone| %>
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>Number:</strong> <%= phone.number %></p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Type:</strong> <%= phone.phone_type.capitalize %></p>
+          <% if phone.phone_type == 'reference' && phone.reference_name.present? %>
+          <><strong>Reference Name:</strong> <%= phone.reference_name %></p>
+            <% end %>
+        </div>
+      </div>
+      <% end %>
+      <% else %>
+      <p>No phones registered.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Salary -->
+  <div class="card mb-4">
+    <div class="card-header">Salary</div>
+    <div class="card-body">
+      <% if @proponent.salary.present? %>
+      <div class="row">
+        <div class="col-md-6">
+          <strong>Amount:</strong> <%= number_to_currency(@proponent.salary.amount, unit: "R$", separator: ',', delimiter: '.') %>
+        </div>
+        <div class="col-md-6">
+          <strong>Inss Aliquot:</strong> <%= number_to_currency(@proponent.salary.aliquot, unit: "R$", separator: ',', delimiter: '.') %>
+        </div>
+      </div>
+      <% else %>
+      <p>No salary information available.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="text-end">
+    <%= link_to 'Edit', edit_user_proponent_path(current_user, @proponent), class: 'btn btn-primary' %>
+    <%= link_to 'Back to List', user_proponents_path(current_user), class: 'btn btn-secondary' %>
+  </div>
+</div>
