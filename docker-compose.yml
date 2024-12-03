@@ -13,14 +13,14 @@ services:
     environment:
       REDIS_URL: redis://redis:6379/0
       RAILS_ENV: development
-      DATABASE_URL: postgres://postgres:password@db:5432/easy_inss_development
+      DATABASE_URL: postgres://postgres:postgres@db:5432/easy_inss_development
 
   db:
     image: postgres:15
     volumes:
       - pg_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
 
   redis:
     image: redis:7.4
