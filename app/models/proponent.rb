@@ -8,7 +8,18 @@ class Proponent < ApplicationRecord
 
   accepts_nested_attributes_for :salary, :address, :phones, allow_destroy: true
 
-  validates :cpf, presence: true, cpf: true
+  validates :cpf, presence: true, cpf: true, uniqueness: { case_sensitive: false }
+  validates :date_of_birth, presence: true, age: true
+
+  after_create :enqueue_inss_discount_metrics_job
+  after_update :enqueue_inss_discount_metrics_job
+  after_destroy :enqueue_inss_discount_metrics_job
+
+  private
+
+  def enqueue_inss_discount_metrics_job
+    UpdateInssDiscountMetricsJob.perform_async(user_id)
+  end
 end
 
 # == Schema Information
