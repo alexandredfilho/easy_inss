@@ -9,11 +9,14 @@ class Salary < ApplicationRecord
   after_create :calculate_and_update_aliquot
 
   def calculate_inss
+    return 0.0 if amount.nil? || amount <= 0
+
     salary = amount
     inss_discount = 0.0
 
     salary_brackets.each do |bracket|
-      inss_discount += calculate_discount_for_bracket(salary, bracket)
+      discount_for_this_bracket = calculate_discount_for_bracket(salary, bracket)
+      inss_discount += discount_for_this_bracket
       salary = adjust_salary_for_next_bracket(salary, bracket)
     end
 
@@ -33,15 +36,20 @@ class Salary < ApplicationRecord
 
   def calculate_discount_for_bracket(salary, bracket)
     salary_in_range = [salary - bracket[:range].begin, bracket[:range].end - bracket[:range].begin].min
+    salary_in_range = [salary_in_range, 0].max
+
     salary_in_range * bracket[:rate]
   end
 
   def adjust_salary_for_next_bracket(salary, bracket)
-    [salary - bracket[:range].begin, 0].max
+    remaining_salary = salary - bracket[:range].begin
+    [remaining_salary, 0].max
   end
 
   def calculate_and_update_aliquot
     self.aliquot = calculate_inss
+    self.aliquot = [aliquot, 0.0].max
+
     save
   end
 end
