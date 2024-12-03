@@ -7,11 +7,10 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <%= link_to 'Proponentes', user_proponents_path(current_user), class: "nav-link" %>
+          <%= link_to 'Dashboard', user_inss_discount_metrics_path(current_user.id), class: "nav-link" %>
         </li>
         <li class="nav-item">
-          <%= link_to 'Reports', users_path, class: "nav-link" %>
-          <!-- Adicione conforme necessário -->
+          <%= link_to 'Proponentes', user_proponents_path(current_user.id), class: "nav-link" %>
         </li>
       </ul>
       <ul class="navbar-nav">
