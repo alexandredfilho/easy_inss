@@ -43,7 +43,7 @@ Clone o repositório para o seu ambiente local:
 ```bash
 git clone git@github.com:alexandredfilho/easy_inss.git
 
-cd seu-repositorio
+cd easy_inss
 ```
 
 ### 2. Para o ambiente de desenvolvimento
